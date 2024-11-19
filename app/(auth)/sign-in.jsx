@@ -7,8 +7,11 @@ import FormField from "@/components/FormField";
 import CustomButton from "@/components/CustomButton";
 import { Link, router } from "expo-router";
 import { signIn } from "@/lib/appwrite";
+import { useDispatch } from 'react-redux';
+import { setUser } from '@/redux/user/userSlice';
 
 const SignIn = () => {
+  const dispatch = useDispatch(); // Access the dispatch function
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [form, setForm] = useState({
     email: "",
@@ -16,21 +19,41 @@ const SignIn = () => {
   });
   const submit = async () => {
     if (!form.email || !form.password) {
-      Alert.alert("Error", "Please fill in all the field");
+      Alert.alert("Error", "Please fill in all the fields");
+      return;
     }
+    
     setIsSubmitting(true);
     try {
       const { email, password } = form;
-      await signIn({ email, password });
-
-      //set it to global state
-      router.replace("/home");
+      const result = await signIn({ email, password });
+      console.log(result);  // Check the result to confirm structure
+      
+      // Extract userId from result and assign other necessary properties
+      const userId = result.userId || '';  // If userId exists in result, use it
+      const providerUid = result.providerUid || ''; // Email from provider
+      const username = ''; // Update this if username exists in the result
+      
+      // Dispatch to set user data in global state
+      dispatch(
+        setUser({
+          userId,
+          username, // Update if username exists in result
+          email: providerUid, // Extracted email
+          password, // From form
+        })
+      );
+  
+      // Navigate to the home page after setting user state
+      // router.replace("/home");
+      
     } catch (error) {
       Alert.alert("Error", error.message || "Failed to connect to database!");
     } finally {
       setIsSubmitting(false);
     }
   };
+  
   return (
     <>
       <SafeAreaView className="h-full bg-primary">

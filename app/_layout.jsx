@@ -3,6 +3,9 @@ import { useFonts } from "expo-font";
 import { useEffect } from "react";
 import { View, Text, ActivityIndicator } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
+import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
+import { store, persistor } from "@/redux/store";
 import "../global.css";
 
 // Prevent the splash screen from hiding automatically
@@ -54,13 +57,17 @@ export function RootLayout() {
   }
 
   return (
-    <Stack>
-      <Stack.Screen name="index" options={{ headerShown: false }} />
-      <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      {/* <Stack.Screen name="/search/[query]" options={{ headerShown: false }} /> */}
-      <Stack.Screen name="+not-found" />
-    </Stack>
+    <Provider store={store}>
+      <PersistGate loading={<ActivityIndicator size="large" color="#0000ff" />} persistor={persistor}>
+        <Stack>
+          <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          {/* <Stack.Screen name="/search/[query]" options={{ headerShown: false }} /> */}
+          <Stack.Screen name="+not-found" />
+        </Stack>
+      </PersistGate>
+    </Provider>
   );
 }
 
