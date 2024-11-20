@@ -1,14 +1,15 @@
 import { View, Text, ScrollView, Dimensions, Alert } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { images } from "@/constants";
+import { images, severURl } from "@/constants";
 import { Image } from "react-native";
 import FormField from "@/components/FormField";
 import CustomButton from "@/components/CustomButton";
 import { Link, router } from "expo-router";
-import { signIn } from "@/lib/appwrite";
 import { useDispatch } from 'react-redux';
 import { setUser } from '@/redux/user/userSlice';
+import axios from "axios";
+import Toast from "react-native-toast-message";
 
 const SignIn = () => {
   const dispatch = useDispatch(); // Access the dispatch function
@@ -19,38 +20,49 @@ const SignIn = () => {
   });
   const submit = async () => {
     if (!form.email || !form.password) {
-      Alert.alert("Error", "Please fill in all the fields");
-      return;
+      // Display error message using Toast
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Please fill in all the fields",
+      });
+      return; // Early return to prevent further execution if fields are not filled
     }
-    
-    setIsSubmitting(true);
+    setIsSubmitting(true); // Set submitting state to true
+
     try {
-      const { email, password } = form;
-      const result = await signIn({ email, password });
-      console.log(result);  // Check the result to confirm structure
-      
-      // Extract userId from result and assign other necessary properties
-      const userId = result.userId || '';  // If userId exists in result, use it
-      const providerUid = result.providerUid || ''; // Email from provider
-      const username = ''; // Update this if username exists in the result
-      
-      // Dispatch to set user data in global state
-      dispatch(
-        setUser({
-          userId,
-          username, // Update if username exists in result
-          email: providerUid, // Extracted email
-          password, // From form
-        })
-      );
-  
-      // Navigate to the home page after setting user state
-      // router.replace("/home");
-      
-    } catch (error) {
-      Alert.alert("Error", error.message || "Failed to connect to database!");
+      // Making POST request to the API using axios
+      const response = await axios.post(`${severURl}/api/login`, form); // Replace with your IP address      
+      const { username, email, avatar, _id } = response.data;
+
+      // Dispatch user data to Redux store
+      dispatch(setUser({
+        userId: _id,
+        username,
+        email,
+        avatar,
+      }));
+      // Redirect to home page on successful registration
+      router.replace("/home");
+
+    } catch (error) {      
+      // Handle error case
+      Toast.show({
+        type: "error",
+        text1: "Registration Error",
+        text2: error.response?.data?.error,
+        props: {
+          style: {
+            padding: 20,  // Increase the padding for larger toast
+            borderRadius: 10,
+          },
+          textStyle: {
+            fontSize: 18, // Increase font size for both title and message
+          },
+        },
+      });
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false); // Reset submitting state
     }
   };
   
@@ -109,6 +121,7 @@ const SignIn = () => {
           </View>
         </ScrollView>
       </SafeAreaView>
+      <Toast />
     </>
   );
 };

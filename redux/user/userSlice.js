@@ -5,7 +5,7 @@ const initialState = {
   id: null,
   username: '',
   email: '',
-  password: '',
+  avatar: '', // Add avatar to initial state
 };
 
 // Create the slice
@@ -14,16 +14,18 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     setUser(state, action) {
+      // Set user data in the Redux store
       state.id = action.payload.userId;
       state.username = action.payload.username || ''; // Add username if available
       state.email = action.payload.email;
-      state.password = action.payload.password;
+      state.avatar = action.payload.avatar || ''; // Set avatar
     },
     clearUser(state) {
+      // Clear user data in the Redux store
       state.id = null;
       state.username = '';
       state.email = '';
-      state.password = '';
+      state.avatar = ''; // Reset avatar
     },
   },
 });

@@ -1,15 +1,18 @@
 import { Dimensions, ScrollView, Text, View } from "react-native";
-import React, { useEffect } from "react";
-import { Link, router } from "expo-router";
+import React, { useEffect, useLayoutEffect } from "react";
+import { Link, Redirect, router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { Image } from "react-native";
 import { images } from "@/constants";
 import CustomButton from "@/components/CustomButton";
-const index = () => {
+import { useSelector } from "react-redux";
+
+const Index = () => {
+  const user = useSelector((state) => state.user); // Replace with your actual state
   const { height } = Dimensions.get("window");
   const viewHeight = height * 0.85; // 85% of the screen height
-
+  if (user) return <Redirect href="/home" />
   return (
     <>
       <SafeAreaView className="h-full bg-primary">
@@ -31,7 +34,7 @@ const index = () => {
             />
             <View className="relative mt-5">
               <Text className="text-3xl font-bold text-center text-white">
-                Discover endless possibilites with{"  "}
+                Discover endless possibilities with{" "}
                 <Text className="text-secondary-200">Aora</Text>
               </Text>
               <Image
@@ -65,4 +68,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default Index;

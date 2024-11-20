@@ -1,15 +1,20 @@
 import { View, Text, ScrollView, Dimensions } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { images } from "@/constants";
+import { images, severURl } from "@/constants";
 import { Image } from "react-native";
 import FormField from "@/components/FormField";
 import CustomButton from "@/components/CustomButton";
 import { Link, router } from "expo-router";
-import { createUser } from "@/lib/appwrite";
 import { Alert } from "react-native";
+import axios from "axios";
+import { setUser } from "@/redux/user/userSlice";
+import { useDispatch } from "react-redux";
+import Toast from "react-native-toast-message";  // Import the Toast component
+
 
 const SignUp = () => {
+  const dispatch = useDispatch();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [form, setForm] = useState({
     username: "",
@@ -18,19 +23,49 @@ const SignUp = () => {
   });
   const submit = async () => {
     if (!form.username || !form.email || !form.password) {
-      Alert.alert("Error", "Please fill in all the field");
+      // Display error message using Toast
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Please fill in all the fields",
+      });
+      return; // Early return to prevent further execution if fields are not filled
     }
-    setIsSubmitting(true);
-    try {
-      const { username, email, password } = form;
-      const result = await createUser({ username, email, password });
+    setIsSubmitting(true); // Set submitting state to true
 
-      //set it to global state
+    try {
+      // Making POST request to the API using axios
+      const response = await axios.post(`${severURl}/api/register`, form); // Replace with your IP address
+      const { username, email, avatar, _id } = response.data;
+
+      // Dispatch user data to Redux store
+      dispatch(setUser({
+        userId: _id,
+        username,
+        email,
+        avatar,
+      }));
+      // Redirect to home page on successful registration
       router.replace("/home");
+
     } catch (error) {
-      Alert.alert("Error", error.message || "Failed to connect to database!");
+      // Handle error case
+      Toast.show({
+        type: "error",
+        text1: "Registration Error",
+        text2: error.response?.data?.message || error.message || "Failed to connect to the database!",
+        props: {
+          style: {
+            padding: 20,  // Increase the padding for larger toast
+            borderRadius: 10,
+          },
+          textStyle: {
+            fontSize: 18, // Increase font size for both title and message
+          },
+        },
+      });
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false); // Reset submitting state
     }
   };
   return (
@@ -96,6 +131,7 @@ const SignUp = () => {
           </View>
         </ScrollView>
       </SafeAreaView>
+      <Toast />
     </>
   );
 };
