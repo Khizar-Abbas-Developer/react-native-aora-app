@@ -10,8 +10,7 @@ import { Alert } from "react-native";
 import axios from "axios";
 import { setUser } from "@/redux/user/userSlice";
 import { useDispatch } from "react-redux";
-import Toast from "react-native-toast-message";  // Import the Toast component
-
+import Toast from "react-native-toast-message"; // Import the Toast component
 
 const SignUp = () => {
   const dispatch = useDispatch();
@@ -35,28 +34,34 @@ const SignUp = () => {
 
     try {
       // Making POST request to the API using axios
-      const response = await axios.post(`${severURl}/api/register`, form); // Replace with your IP address
+      const response = await axios.post(
+        `https://react-native-aora-server.vercel.app/api/v1/register`,
+        form
+      ); // Replace with your IP address
       const { username, email, avatar, _id } = response.data;
 
       // Dispatch user data to Redux store
-      dispatch(setUser({
-        userId: _id,
-        username,
-        email,
-        avatar,
-      }));
+      dispatch(
+        setUser({
+          userId: _id,
+          username,
+          email,
+          avatar,
+        })
+      );
       // Redirect to home page on successful registration
       router.replace("/home");
-
     } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || "An unexpected error occurred";
       // Handle error case
       Toast.show({
         type: "error",
         text1: "Registration Error",
-        text2: error.response?.data?.message || error.message || "Failed to connect to the database!",
+        text2: errorMessage,
         props: {
           style: {
-            padding: 20,  // Increase the padding for larger toast
+            padding: 20, // Increase the padding for larger toast
             borderRadius: 10,
           },
           textStyle: {

@@ -50,15 +50,19 @@ export function RootLayout() {
   if (!fontsLoaded) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color="#0000ff" />
-        <Text style={{ marginTop: 10 }}>Loading fonts...</Text>
+        <ActivityIndicator size={100} color="#0000ff" />
+        {/* Increase size to 100 */}
+        {/* <Text style={{ marginTop: 10 }}>Loading fonts...</Text> */}
       </View>
     );
   }
 
   return (
     <Provider store={store}>
-      <PersistGate loading={<ActivityIndicator size="large" color="#0000ff" />} persistor={persistor}>
+      <PersistGate
+        loading={<ActivityIndicator size="large" color="#0000ff" />}
+        persistor={persistor}
+      >
         <Stack>
           <Stack.Screen name="index" options={{ headerShown: false }} />
           <Stack.Screen name="(auth)" options={{ headerShown: false }} />

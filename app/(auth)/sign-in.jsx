@@ -6,8 +6,8 @@ import { Image } from "react-native";
 import FormField from "@/components/FormField";
 import CustomButton from "@/components/CustomButton";
 import { Link, router } from "expo-router";
-import { useDispatch } from 'react-redux';
-import { setUser } from '@/redux/user/userSlice';
+import { useDispatch } from "react-redux";
+import { setUser } from "@/redux/user/userSlice";
 import axios from "axios";
 import Toast from "react-native-toast-message";
 
@@ -32,32 +32,35 @@ const SignIn = () => {
 
     try {
       // Making POST request to the API using axios
-      const response = await axios.post(`${severURl}/api/login`, form); // Replace with your IP address      
-      const { username, email, avatar, _id } = response.data;
-
+      const response = await axios.post(
+        `https://react-native-aora-server.vercel.app/api/v1/login`,
+        form
+      ); // Replace with your IP address
+      const { username, email, token, id, status } = response.data.data;
       // Dispatch user data to Redux store
-      dispatch(setUser({
-        userId: _id,
-        username,
-        email,
-        avatar,
-      }));
-      // Redirect to home page on successful registration
+      dispatch(
+        setUser({
+          userId: id,
+          username,
+          email,
+          token,
+          status,
+        })
+      );
       router.replace("/home");
-
-    } catch (error) {      
+    } catch (error) {
       // Handle error case
       Toast.show({
         type: "error",
-        text1: "Registration Error",
-        text2: error.response?.data?.error,
+        text1: "Validation Error",
+        text2: error.response?.data?.message,
         props: {
           style: {
-            padding: 20,  // Increase the padding for larger toast
+            padding: 20, // Increase the padding for larger toast
             borderRadius: 10,
           },
           textStyle: {
-            fontSize: 18, // Increase font size for both title and message
+            fontSize: 20, // Increase font size for both title and message
           },
         },
       });
@@ -65,7 +68,7 @@ const SignIn = () => {
       setIsSubmitting(false); // Reset submitting state
     }
   };
-  
+
   return (
     <>
       <SafeAreaView className="h-full bg-primary">

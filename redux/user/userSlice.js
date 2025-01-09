@@ -1,31 +1,32 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 // Initial state
 const initialState = {
   id: null,
-  username: '',
-  email: '',
-  avatar: '', // Add avatar to initial state
+  email: "",
+  username: "",
+  status: "",
+  token: "",
 };
 
 // Create the slice
 const userSlice = createSlice({
-  name: 'user',
+  name: "user",
   initialState,
   reducers: {
     setUser(state, action) {
-      // Set user data in the Redux store
       state.id = action.payload.userId;
-      state.username = action.payload.username || ''; // Add username if available
       state.email = action.payload.email;
-      state.avatar = action.payload.avatar || ''; // Set avatar
+      state.username = action.payload.username || "";
+      state.status = action.payload.status;
+      state.token = action.payload.token;
     },
     clearUser(state) {
-      // Clear user data in the Redux store
       state.id = null;
-      state.username = '';
-      state.email = '';
-      state.avatar = ''; // Reset avatar
+      state.email = "";
+      state.username = "";
+      state.status = "";
+      state.token = "";
     },
   },
 });

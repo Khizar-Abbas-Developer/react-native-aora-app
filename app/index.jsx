@@ -12,7 +12,7 @@ const Index = () => {
   const user = useSelector((state) => state.user); // Replace with your actual state
   const { height } = Dimensions.get("window");
   const viewHeight = height * 0.85; // 85% of the screen height
-  if (user) return <Redirect href="/home" />
+  if (user && user.id) return <Redirect href="/home" />;
   return (
     <>
       <SafeAreaView className="h-full bg-primary">
