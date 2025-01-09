@@ -13,8 +13,11 @@ import { Image } from "react-native";
 import CustomButton from "@/components/CustomButton";
 import { Link, router } from "expo-router";
 import Toast from "react-native-toast-message";
+import { useSelector } from "react-redux";
+import axios from "axios";
 
 const OTPVerification = () => {
+  const user = useSelector((state) => state.user); // Replace with your actual state
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [otp, setOtp] = useState(["", "", "", "", ""]); // OTP state with 4 fields
   const inputRefs = useRef([]); // Ref for managing input fields
@@ -46,8 +49,8 @@ const OTPVerification = () => {
     try {
       // Replace with your actual API endpoint
       const response = await axios.post(
-        "https://your-api-endpoint.com/verify-otp",
-        { otp }
+        "https://react-native-aora-server.vercel.app/api/v1/verify-otp",
+        { otp, userId: user.userId }
       );
 
       if (response.data.success) {
