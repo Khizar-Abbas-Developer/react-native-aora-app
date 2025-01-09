@@ -38,15 +38,15 @@ const SignUp = () => {
         `https://react-native-aora-server.vercel.app/api/v1/register`,
         form
       ); // Replace with your IP address
-      const { username, email, avatar, _id } = response.data;
+      const { username, email, status, id } = response.data;
 
       // Dispatch user data to Redux store
       dispatch(
         setUser({
-          userId: _id,
+          userId: id,
           username,
           email,
-          avatar,
+          status,
         })
       );
       // Redirect to home page on successful registration
