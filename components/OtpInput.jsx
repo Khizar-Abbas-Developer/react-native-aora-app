@@ -18,6 +18,8 @@ import axios from "axios";
 
 const OTPVerification = () => {
   const user = useSelector((state) => state.user); // Replace with your actual state
+  console.log(user);
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [otp, setOtp] = useState(["", "", "", "", ""]); // OTP state with 4 fields
   const inputRefs = useRef([]); // Ref for managing input fields
@@ -34,6 +36,8 @@ const OTPVerification = () => {
   };
 
   const submit = async () => {
+    const numericOtp = parseInt(otp.join(""), 10); // Join and convert to number
+
     if (otp.some((digit) => !digit)) {
       // Display error message using Toast if any field is empty
       Toast.show({
@@ -47,10 +51,14 @@ const OTPVerification = () => {
 
     // Simulate OTP verification
     try {
+      const dataToSend = {
+        otpValue: numericOtp,
+        userId: user.id,
+      };
       // Replace with your actual API endpoint
       const response = await axios.post(
         "https://react-native-aora-server.vercel.app/api/v1/verify-otp",
-        { otp, userId: user.userId }
+        dataToSend
       );
 
       if (response.data.success) {
