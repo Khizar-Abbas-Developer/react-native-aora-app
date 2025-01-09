@@ -10,7 +10,7 @@ import { Alert } from "react-native";
 import axios from "axios";
 import { setUser } from "@/redux/user/userSlice";
 import { useDispatch } from "react-redux";
-import Toast from "react-native-toast-message"; // Import the Toast component
+import Toast from "react-native-toast-message";
 
 const SignUp = () => {
   const dispatch = useDispatch();
@@ -50,7 +50,7 @@ const SignUp = () => {
         })
       );
       // Redirect to home page on successful registration
-      router.replace("/home");
+      router.replace("/verification");
     } catch (error) {
       const errorMessage =
         error.response?.data?.message || "An unexpected error occurred";
@@ -93,7 +93,7 @@ const SignUp = () => {
             </Text>
             <FormField
               title="Username"
-              value={form.username}
+              value={form.username || ""}
               handleChangeText={(e) => {
                 setForm({ ...form, username: e });
               }}
@@ -101,7 +101,7 @@ const SignUp = () => {
             />
             <FormField
               title="Email"
-              value={form.email}
+              value={form.email || ""}
               handleChangeText={(e) => {
                 setForm({ ...form, email: e });
               }}
@@ -110,7 +110,7 @@ const SignUp = () => {
             />
             <FormField
               title="Password"
-              value={form.password}
+              value={form.password || ""}
               handleChangeText={(e) => {
                 setForm({ ...form, password: e });
               }}
