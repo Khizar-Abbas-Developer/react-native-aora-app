@@ -16,7 +16,7 @@ import Toast from "react-native-toast-message";
 
 const OTPVerification = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [otp, setOtp] = useState(["", "", "", ""]); // OTP state with 4 fields
+  const [otp, setOtp] = useState(["", "", "", "", ""]); // OTP state with 4 fields
   const inputRefs = useRef([]); // Ref for managing input fields
 
   const handleChangeText = (index, value) => {
@@ -83,17 +83,17 @@ const OTPVerification = () => {
             minHeight: Dimensions.get("window").height - 100,
           }}
         >
-          <View className="flex-row px-5">
+          <View className="flex-row px-3">
             <Image
               source={images.logo}
               resizeMethod="contain"
               className="w-[115px] h-[35px]"
             />
           </View>
-          <Text className="mt-10 text-2xl px-5 text-white font-psemibold ">
+          <Text className="mt-10 text-2xl px-3 text-white font-psemibold ">
             Enter OTP
           </Text>
-          <View className="flex-row justify-between gap-6 mt-7 px-5">
+          <View className="flex-row justify-between gap-2 mt-7 px-3">
             {otp.map((digit, index) => (
               <TextInput
                 key={index}
